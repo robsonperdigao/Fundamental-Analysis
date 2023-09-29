@@ -2,13 +2,58 @@ import pandas as pd
 import requests
 import telebot
 
-def lista_setores(setor=None):
+def acoes_setor(setor=None):
     """
-    Setor: ...
-
+    Setores:
+      1 - Agropecuária
+      2 - Água e Saneamento
+      3 - Alimentos Processados
+      4 - Serv.Méd.Hospit. Análises e Diagnósticos
+      5 - Automóveis e Motocicletas
+      6 - Bebidas
+      7 - Comércio
+      8 - Comércio e Distribuição
+      9 - Computadores e Equipamentos
+      10 - Construção Civil
+      11 - Construção e Engenharia
+      12 - Diversos
+      13 - 
+      14 - Energia Elétrica
+      15 - Equipamentos
+      16 - Exploração de Imóveis
+      17 - Gás
+      18 - Holdings Diversificadas
+      19 - Hoteis e Restaurantes
+      20 - Intermediários Financeiros
+      21 - Madeira e Papel
+      22 - Máquinas e Equipamentos
+      23 - Materiais Diversos
+      24 - Material de Transporte
+      25 - Medicamentos e Outros Produtos
+      26 - Mídia
+      27 - Mineração
+      28 - Outros
+      29 - 
+      30 - Petróleo, Gás e Biocombustíveis
+      31 - Previdência e Seguros
+      32 - Produtos de Uso Pessoal e de Limpeza
+      33 - Programas e Serviços
+      34 - Químicos
+      35 - 
+      36 - Serviços Diversos
+      37 - Serviços Financeiros Diversos
+      38 - Siderurgia e Metalurgia
+      39 - Tecidos, Vestuário e Calçados
+      40 - Telecomunicações
+      41 - Transporte
+      42 - Utilidades Domésticas
+      43 - Viagens e Lazer
+    
     Output:
       List
     """
+
+    ## GET: setor
     url = f'http://www.fundamentus.com.br/resultado.php?setor={setor}'
     header = {'User-agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201' ,
            'Accept': 'text/html, text/plain, text/css, text/sgml, */*;q=0.01' ,
@@ -35,6 +80,13 @@ liquidez = 1000000
 qtd_ativos = 15
 tabela = tabela[['Papel', 'Cotação', 'EV/EBIT', 'ROIC', 'Liq.2meses', 'P/L']]
 tabela['Empresa'] = tabela['Papel'].str[:4]
+
+interm_finan = acoes_setor(20)
+prev_seg = acoes_setor(31)
+empresas_fora = interm_finan + prev_seg
+mascara = tabela['Papel'].isin(empresas_fora)
+tabela = tabela[~mascara]
+
 tabela = tabela.drop_duplicates(subset='Empresa')
 tabela = tabela.set_index('Papel')
 tabela = tabela[tabela['Liq.2meses'] > liquidez]
